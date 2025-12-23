@@ -1,10 +1,9 @@
-import { HealthStatus } from '../components/HealthStatus';
+import { Map } from '../components/Map';
 
 export function HomePage() {
     return (
-        <>
-            <h1>FSA Maps</h1>
-            <HealthStatus />
-        </>
+        <div className="min-h-screen h-screen w-full">
+            <Map />
+        </div>
     )
 }
