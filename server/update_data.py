@@ -2,19 +2,9 @@ import requests
 import pandas as pd
 from database import SessionLocal, Business, Base, engine
 from pathlib import Path
-from datetime import datetime
 
 ONLINE_CSV = "https://safhrsprodstorage.blob.core.windows.net/opendatafileblobstorage/FHRS_All_en-GB.csv"
 LOCAL_CSV = "../FHRS_All_en-GB.csv"
-
-def parse_date(date):
-    if date == "":
-        return None
-    else:
-        try:
-            return datetime.strptime(str(date), "%Y-%m-%d").date()
-        except (ValueError, TypeError):
-            return None
 
 def download_csv():
     try:
@@ -67,7 +57,7 @@ def update_database():
                 longitude=row["Longitude"],
                 local_authority=row.get("LocalAuthorityName", ""),
                 pending=row.get("NewRatingPending", ""),
-                date=parse_date(row.get("RatingDate", "")),
+                date=row.get("RatingDate", ""),
                 scheme=row.get("SchemeType", ""),
                 rating=row.get("RatingValue", "")
             )

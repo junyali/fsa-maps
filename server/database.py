@@ -1,8 +1,9 @@
 from sqlalchemy import create_engine, Column, Integer, String, Float, Boolean, Date
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from pathlib import Path
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./fsa_data.db"
+SQLALCHEMY_DATABASE_URL = f"sqlite:///{Path(__file__).parent / "fsa_data.db"}"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
@@ -27,7 +28,7 @@ class Business(Base):
     longitude = Column(Float)
     local_authority = Column(String)
     pending = Column(Boolean)
-    date = Column(Date)
+    date = Column(String)
     scheme = Column(String)
     rating = Column(String)
 

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from server.routers.health import router as health_router
+from server.routers.businesses import router as businesses_router
 
 app = FastAPI(title="FSA Maps API")
 
@@ -18,6 +19,7 @@ app.add_middleware(
 )
 
 app.include_router(health_router, prefix="/api")
+app.include_router(businesses_router, prefix="/api")
 
 @app.get("/")
 async def main():
