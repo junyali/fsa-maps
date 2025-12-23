@@ -18,7 +18,10 @@ class Business(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    address = Column(String)
+    address_1 = Column(String)
+    address_2 = Column(String)
+    address_3 = Column(String)
+    address_4 = Column(String)
     postcode = Column(String)
     latitude = Column(Float)
     longitude = Column(Float)
