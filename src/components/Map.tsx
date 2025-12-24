@@ -87,15 +87,15 @@ export function Map() {
             case "pass":
                 return { colour: "bg-blue-500", text: "P" };
             case "passandeatsafe":
-                return { colour: "bg-blue-300", text: "P/ES" };
+                return { colour: "bg-blue-300", text: "PES" };
             case "improvementrequired":
-                return { colour: "bg-red-600", text: "IR" };
+                return { colour: "bg-red-600", text: "ImR" };
             case "exempt":
-                return { colour: "bg-gray-500", text: "E" };
+                return { colour: "bg-gray-500", text: "Ex" };
             case "awaitingpublication":
-                return { colour: "bg-gray-400", text: "AP" };
+                return { colour: "bg-gray-400", text: "AwP" };
             case "awaitinginspection":
-                return { colour: "bg-gray-600", text: "AI" };
+                return { colour: "bg-gray-600", text: "AwI" };
             default:
                 return { colour: "bg-gray-500", text: "N/A" };
         }
