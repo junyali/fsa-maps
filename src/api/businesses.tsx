@@ -12,7 +12,8 @@ export type Business = {
     pending: string
     date: string
     scheme: string
-    rating: string
+    rating_key: string
+    rating_value: string
 }
 
 export async function fetchBusinesses(

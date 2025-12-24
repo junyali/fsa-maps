@@ -30,6 +30,7 @@ class Business(Base):
     pending = Column(Boolean)
     date = Column(String)
     scheme = Column(String)
-    rating = Column(String)
+    rating_key = Column(String)
+    rating_value = Column(String)
 
 Base.metadata.create_all(bind=engine)

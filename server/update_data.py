@@ -71,7 +71,8 @@ def update_database():
                     pending=safe_get(row, "NewRatingPending"),
                     date=safe_get(row, "RatingDate"),
                     scheme=safe_get(row, "SchemeType"),
-                    rating=safe_get(row, "RatingValue")
+                    rating_key=safe_get(row, "RatingKey"),
+                    rating_value=safe_get(row, "RatingValue")
                 )
                 batch.append(business)
                 imported += 1

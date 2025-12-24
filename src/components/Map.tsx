@@ -116,7 +116,7 @@ export function Map() {
                             </div>
                             <hr className="my-2 border-gray-200" />
                             <div className="text-2xl font-bold text-center">
-                                {business.rating}
+                                {business.rating_value}
                             </div>
                         </div>
                     </Popup>

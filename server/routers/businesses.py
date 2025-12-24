@@ -28,7 +28,8 @@ class BusinessResponse(BaseModel):
     pending: Optional[bool] = None
     date: Optional[str] = None
     scheme: Optional[str] = None
-    rating: Optional[str] = None
+    rating_key: Optional[str] = None
+    rating_value: Optional[str] = None
 
 @router.get("", response_model=List[BusinessResponse])
 def get_businesses(
