@@ -15,18 +15,18 @@ let DefaultIcon = L.icon({
 
 L.Marker.prototype.options.icon = DefaultIcon;
 
-function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBounds) => void}) {
+function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBounds, zoom: number) => void}) {
     const map = useMapEvents({
         moveend: () => {
-            onBoundsChange(map.getBounds());
+            onBoundsChange(map.getBounds(), map.getZoom());
         },
         zoomend: () => {
-            onBoundsChange(map.getBounds());
+            onBoundsChange(map.getBounds(), map.getZoom());
         }
     });
 
     useEffect(() => {
-        onBoundsChange(map.getBounds());
+        onBoundsChange(map.getBounds(), map.getZoom());
     }, []);
 
     return null;
@@ -37,7 +37,11 @@ export function Map() {
     const ukCentre: [number, number] = [54.0021959912, -2.54204416515];
     const [businesses, setBusinesses] = useState<Business[]>([]);
 
-    const handleBoundsChange = async (bounds: L.LatLngBounds) => {
+    const handleBoundsChange = async (bounds: L.LatLngBounds, zoom: number) => {
+        if (zoom < 16) {
+            setBusinesses([])
+            return;
+        }
         try {
             const south = bounds.getSouth();
             const north = bounds.getNorth();
@@ -63,6 +67,8 @@ export function Map() {
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                maxNativeZoom={19}
+                maxZoom={24}
             />
             <MapUpdater onBoundsChange={handleBoundsChange} />
             {businesses.map(business => (
