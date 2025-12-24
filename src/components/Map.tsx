@@ -37,6 +37,25 @@ export function Map() {
     const ukCentre: [number, number] = [54.0021959912, -2.54204416515];
     const [businesses, setBusinesses] = useState<Business[]>([]);
 
+    const getRatingImage = (ratingKey: string | null): string | null => {
+        if (!ratingKey) return null;
+
+        const parts = ratingKey.toLowerCase().split("_");
+        if (parts.length !== 3) return null;
+
+        const [scheme, rating, culture] = parts;
+
+        if (scheme === "fhis") {
+            return `/fhis/${scheme}_${rating}.jpg`;
+        }
+
+        if (scheme === "fhrs") {
+            return `/fhrs/${scheme}_${rating}_${culture}.svg`;
+        }
+
+        return null;
+    }
+
     const handleBoundsChange = async (bounds: L.LatLngBounds, zoom: number) => {
         if (zoom < 16) {
             setBusinesses([])
@@ -116,7 +135,11 @@ export function Map() {
                             </div>
                             <hr className="my-2 border-gray-200" />
                             <div className="text-2xl font-bold text-center">
-                                {business.rating_value}
+                                <img
+                                    src={getRatingImage(business.rating_key)!}
+                                    alt={business.rating_value}
+                                    className="max-auto"
+                                />
                             </div>
                         </div>
                     </Popup>
