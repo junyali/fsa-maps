@@ -65,50 +65,49 @@ export function Map() {
         return null;
     }
 
-    const getRatingColour = (ratingValue: string | null): string => {
-        if (!ratingValue) return "bg-gray-500"
+    const getRatingStyle = (ratingValue: string | null): {colour: string, text: string} => {
+        if (!ratingValue) return { colour: "bg-gray-500", text: "N/A" }
         const rating = ratingValue.trim().toLowerCase().replace(/\s+/g, '')
 
         console.log(rating)
 
         switch(rating) {
             case "5":
-                return "bg-green-600";
+                return { colour: "bg-green-600", text: "5" };
             case "4":
-                return "bg-lime-500";
+                return { colour: "bg-lime-500", text: "4" };
             case "3":
-                return "bg-yellow-400";
+                return { colour: "bg-yellow-400", text: "3" };
             case "2":
-                return "bg-orange-400";
+                return { colour: "bg-orange-400", text: "2" };
             case "1":
-                return "bg-orange-800";
+                return { colour: "bg-orange-800", text: "1" };
             case "0":
-                return "bg-red-600";
+                return { colour: "bg-red-600", text: "0" };
             case "pass":
-                return "bg-blue-500";
+                return { colour: "bg-blue-500", text: "P" };
             case "passandeatsafe":
-                return "bg-blue-300";
+                return { colour: "bg-blue-300", text: "P/ES" };
             case "improvementrequired":
-                return "bg-red-600";
+                return { colour: "bg-red-600", text: "IR" };
             case "exempt":
-                return "bg-gray-500";
+                return { colour: "bg-gray-500", text: "E" };
             case "awaitingpublication":
-                return "bg-gray-400";
+                return { colour: "bg-gray-400", text: "AP" };
             case "awaitinginspection":
-                return "bg-gray-600";
+                return { colour: "bg-gray-600", text: "AI" };
             default:
-                return "bg-gray-500";
+                return { colour: "bg-gray-500", text: "N/A" };
         }
     }
 
     const createIcon = (ratingValue: string | null) => {
-        const colours = getRatingColour(ratingValue);
-        const displayRating = ratingValue || "?";
+        const style = getRatingStyle(ratingValue);
 
         return L.divIcon({
             html: `
-                <div class="flex items-center justify-center w-8 h-8 ${colours} text-white font-bold text-sm rounded-lg border-2 border-black">
-                    ${displayRating}
+                <div class="flex items-center justify-center w-8 h-8 ${style.colour} text-white font-bold text-sm rounded-lg border-2 border-black">
+                    ${style.text}
                 </div>
             `,
             className: "custom-marker",
