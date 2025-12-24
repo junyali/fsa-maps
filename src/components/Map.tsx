@@ -40,10 +40,19 @@ export function Map() {
     const getRatingImage = (ratingKey: string | null): string | null => {
         if (!ratingKey) return null;
 
-        const parts = ratingKey.toLowerCase().split("_");
-        if (parts.length !== 3) return null;
+        const lowerKey = ratingKey.toLowerCase();
+        const parts = lowerKey.split("_");
 
-        const [scheme, rating, culture] = parts;
+        if (parts.length < 2) return null;
+
+        const lastPart = parts[parts.length - 1];
+
+        const scheme = parts[0];
+        const culture = (lastPart === "en-gb" || lastPart === "cy-gb") ? lastPart: null;
+
+        const ratingParts = culture ? parts.slice(1, -1) : parts.slice(1)
+
+        const rating = ratingParts.join("_");
 
         if (scheme === "fhis") {
             return `/fhis/${scheme}_${rating}.jpg`;
