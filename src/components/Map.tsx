@@ -56,6 +56,59 @@ export function Map() {
         return null;
     }
 
+    const getRatingColour = (ratingValue: string | null): string => {
+        if (!ratingValue) return "bg-gray-500"
+        const rating = ratingValue.trim().toLowerCase().replace(/\s+/g, '')
+
+        console.log(rating)
+
+        switch(rating) {
+            case "5":
+                return "bg-green-600";
+            case "4":
+                return "bg-lime-500";
+            case "3":
+                return "bg-yellow-400";
+            case "2":
+                return "bg-orange-400";
+            case "1":
+                return "bg-orange-800";
+            case "0":
+                return "bg-red-600";
+            case "pass":
+                return "bg-blue-500";
+            case "passandeatsafe":
+                return "bg-blue-300";
+            case "improvementrequired":
+                return "bg-red-600";
+            case "exempt":
+                return "bg-gray-500";
+            case "awaitingpublication":
+                return "bg-gray-400";
+            case "awaitinginspection":
+                return "bg-gray-600";
+            default:
+                return "bg-gray-500";
+        }
+    }
+
+    const createIcon = (ratingValue: string | null) => {
+        const colours = getRatingColour(ratingValue);
+        const displayRating = ratingValue || "?";
+
+        return L.divIcon({
+            html: `
+                <div class="flex items-center justify-center w-8 h-8 ${colours} text-white font-bold text-sm rounded-lg border-2 border-black">
+                    ${displayRating}
+                </div>
+            `,
+            className: "custom-marker",
+            iconSize: [64, 64],
+            iconAnchor: [32, 32],
+            popupAnchor: [0, -32]
+        });
+    }
+
     const handleBoundsChange = async (bounds: L.LatLngBounds, zoom: number) => {
         if (zoom < 16) {
             setBusinesses([])
@@ -94,6 +147,7 @@ export function Map() {
                 <Marker
                     key={business.id}
                     position={[business.latitude, business.longitude]}
+                    icon={createIcon(business.rating_value)}
                 >
                     <Popup>
                         <div>
