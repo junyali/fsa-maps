@@ -81,9 +81,9 @@ export function Map() {
             case "2":
                 return { colour: "bg-orange-400", text: "2" };
             case "1":
-                return { colour: "bg-orange-800", text: "1" };
+                return { colour: "bg-orange-700", text: "1" };
             case "0":
-                return { colour: "bg-red-600", text: "0" };
+                return { colour: "bg-red-800", text: "0" };
             case "pass":
                 return { colour: "bg-blue-500", text: "P" };
             case "passandeatsafe":
@@ -106,14 +106,14 @@ export function Map() {
 
         return L.divIcon({
             html: `
-                <div class="flex items-center justify-center w-8 h-8 ${style.colour} text-white font-bold text-sm rounded-lg border-2 border-black">
+                <div class="flex items-center justify-center w-8 h-8 whitespace-nowrap ${style.colour} text-white font-bold text-md rounded-lg border-2 border-black">
                     ${style.text}
                 </div>
             `,
             className: "custom-marker",
-            iconSize: [64, 64],
-            iconAnchor: [32, 32],
-            popupAnchor: [0, -32]
+            iconSize: [8, 8],
+            iconAnchor: [4, 4],
+            popupAnchor: [0, -4]
         });
     }
 
