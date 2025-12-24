@@ -77,10 +77,47 @@ export function Map() {
                     position={[business.latitude, business.longitude]}
                 >
                     <Popup>
-                        <div className="text-sm">
-                            <h3 className="font-bold">{business.name}</h3>
-                            <p className="text-xs">{business.address_1}</p>
-                            <p className="text-xs mt-1">Rating: <span className="font-semibold">{business.rating}</span></p>
+                        <div>
+                            <h3 className="font-bold text-base">{business.name}</h3>
+                            <div className="text-black">
+                                {[business.address_1, business.address_2, business.address_3, business.address_4]
+                                    .filter((line, index, array) =>
+                                        line &&
+                                        line.trim() !== "" &&
+                                        array.indexOf(line) === index
+                                    )
+                                    .map((line, index, array) => (
+                                        <span key={index}>
+                                            {line}
+                                            {index < array.length - 1 && <br />}
+                                        </span>
+                                    ))
+                                }
+                                {business.postcode && <><br /><span className="font-medium">{business.postcode}</span></>}
+                            </div>
+                            <div className="text-gray-600">
+                                {business.local_authority && (
+                                    <>
+                                        <br />
+                                        <span>
+                                            Local Authority: {business.local_authority}
+                                            {business.scheme && ` [${business.scheme}]`}
+                                        </span>
+                                    </>
+                                )}
+                                {business.date && (
+                                    <>
+                                        <br />
+                                        <span>
+                                            Inspection Date: {new Date(business.date).toLocaleDateString("en-GB")}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                            <hr className="my-2 border-gray-200" />
+                            <div className="text-2xl font-bold text-center">
+                                {business.rating}
+                            </div>
                         </div>
                     </Popup>
                 </Marker>
