@@ -2,6 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from server.routers.health import router as health_router
 from server.routers.businesses import router as businesses_router
+import logging
+
+logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
 
 app = FastAPI(title="FSA Maps API")
 
