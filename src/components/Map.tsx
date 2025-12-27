@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from 'leaflet/dist/images/marker-icon.png';
@@ -33,13 +33,14 @@ function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBound
     return null;
 }
 
-export function Map({ onCountChange }: { onCountChange: (count: number) => void }) {
+export function Map({ onCountChange, selectedRatings }: { onCountChange: (count: number) => void; selectedRatings: string[] }) {
     /* DD coordinates according to the first google result */
     /* const ukCentre: [number, number] = [54.0021959912, -2.54204416515]; */
 
     /* central london */
     const ukCentre: [number, number] = [51.509865, -0.118092];
     const [businesses, setBusinesses] = useState<Business[]>([]);
+    const [currentBounds, setCurrentBounds] = useState<{ bounds: L.LatLngBounds; zoom: number } | null>(null);
 
     const createIcon = (ratingValue: string | null) => {
         const style = getRatingStyle(ratingValue);
@@ -57,7 +58,14 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
         });
     }
 
-    const handleBoundsChange = async (bounds: L.LatLngBounds, zoom: number) => {
+    useEffect(() => {
+        if (currentBounds) {
+            handleBoundsChange(currentBounds.bounds, currentBounds.zoom).catch();
+        }
+    }, [selectedRatings]);
+
+    const handleBoundsChange = useCallback(async (bounds: L.LatLngBounds, zoom: number) => {
+        setCurrentBounds({ bounds, zoom });
         if (zoom < 16) {
             setBusinesses([])
             onCountChange(0);
@@ -69,7 +77,7 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
             const west = bounds.getWest();
             const east = bounds.getEast();
 
-            const data = await fetchBusinesses(south, north, west, east);
+            const data = await fetchBusinesses(south, north, west, east, selectedRatings);
             setBusinesses(data);
             onCountChange(data.length);
         } catch (error) {
@@ -78,7 +86,7 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
             onCountChange(0);
         } finally {
         }
-    };
+    }, [selectedRatings, onCountChange]);
 
     return (
         <div className="w-full h-full">

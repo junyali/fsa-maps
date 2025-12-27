@@ -20,7 +20,10 @@ export function HomePage() {
         <div className="flex flex-col min-h-screen h-screen w-full">
             <Header onMenuClick={toggleSidebar} />
             <div className="relative flex-1 overflow-hidden">
-                <Map onCountChange={setCount} />
+                <Map
+                    onCountChange={setCount}
+                    selectedRatings={selectedRatings}
+                />
                 <SideBar
                     isOpen={isSidebarOpen}
                     onClose={toggleSidebar}

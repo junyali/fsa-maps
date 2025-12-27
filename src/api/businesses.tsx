@@ -20,7 +20,8 @@ export async function fetchBusinesses(
     minLat: number,
     maxLat: number,
     minLng: number,
-    maxLng: number
+    maxLng: number,
+    ratings?: string[]
 ): Promise<Business[]> {
     const params = new URLSearchParams({
         min_lat: minLat.toString(),
@@ -28,6 +29,10 @@ export async function fetchBusinesses(
         min_lng: minLng.toString(),
         max_lng: maxLng.toString(),
     });
+
+    if (ratings && ratings.length > 0) {
+        params.append('ratings', ratings.join(","));
+    }
 
     const res = await fetch(`/api/businesses?${params}`);
 

@@ -37,6 +37,7 @@ def get_businesses(
         max_lat: float = Query(...),
         min_lng: float = Query(...),
         max_lng: float = Query(...),
+        ratings: str = Query(""),
         db: Session = Depends(get_db)
 ):
     if min_lat >= max_lat:
@@ -55,6 +56,11 @@ def get_businesses(
         Business.latitude <= max_lat,
         Business.longitude >= min_lng,
         Business.longitude <= max_lng
-    ).all()
+    )
 
-    return businesses
+    if ratings:
+        rating_list = ratings.split(",")
+        rating_list = [r.strip() for r in rating_list]
+        businesses = businesses.filter(Business.rating_value.in_(rating_list))
+
+    return businesses.all()
