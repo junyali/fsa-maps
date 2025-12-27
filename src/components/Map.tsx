@@ -5,6 +5,7 @@ import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
 import L from 'leaflet';
 import { fetchBusinesses, type Business } from '../api/businesses';
+import { getRatingImage, getRatingStyle } from '../utils/ratings';
 
 let DefaultIcon = L.icon({
     iconUrl: icon,
@@ -40,77 +41,13 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
     const ukCentre: [number, number] = [51.509865, -0.118092];
     const [businesses, setBusinesses] = useState<Business[]>([]);
 
-    const getRatingImage = (ratingKey: string | null): string | null => {
-        if (!ratingKey) return null;
-
-        const lowerKey = ratingKey.toLowerCase();
-        const parts = lowerKey.split("_");
-
-        if (parts.length < 2) return null;
-
-        const lastPart = parts[parts.length - 1];
-
-        const scheme = parts[0];
-        const culture = (lastPart === "en-gb" || lastPart === "cy-gb") ? lastPart: null;
-
-        const ratingParts = culture ? parts.slice(1, -1) : parts.slice(1)
-
-        const rating = ratingParts.join("_");
-
-        if (scheme === "fhis") {
-            return `/fhis/${scheme}_${rating}.jpg`;
-        }
-
-        if (scheme === "fhrs") {
-            return `/fhrs/${scheme}_${rating}_${culture}.svg`;
-        }
-
-        return null;
-    }
-
-    const getRatingStyle = (ratingValue: string | null): {colour: string, text: string} => {
-        if (!ratingValue) return { colour: "bg-gray-500", text: "N/A" }
-        const rating = ratingValue.trim().toLowerCase().replace(/\s+/g, '')
-
-        console.log(rating)
-
-        switch(rating) {
-            case "5":
-                return { colour: "bg-green-600", text: "5" };
-            case "4":
-                return { colour: "bg-lime-500", text: "4" };
-            case "3":
-                return { colour: "bg-yellow-400", text: "3" };
-            case "2":
-                return { colour: "bg-orange-400", text: "2" };
-            case "1":
-                return { colour: "bg-orange-700", text: "1" };
-            case "0":
-                return { colour: "bg-red-800", text: "0" };
-            case "pass":
-                return { colour: "bg-blue-500", text: "P" };
-            case "passandeatsafe":
-                return { colour: "bg-blue-300", text: "PES" };
-            case "improvementrequired":
-                return { colour: "bg-red-600", text: "ImR" };
-            case "exempt":
-                return { colour: "bg-gray-500", text: "Ex" };
-            case "awaitingpublication":
-                return { colour: "bg-gray-400", text: "AwP" };
-            case "awaitinginspection":
-                return { colour: "bg-gray-600", text: "AwI" };
-            default:
-                return { colour: "bg-gray-500", text: "N/A" };
-        }
-    }
-
     const createIcon = (ratingValue: string | null) => {
         const style = getRatingStyle(ratingValue);
 
         return L.divIcon({
             html: `
                 <div class="flex items-center justify-center w-8 h-8 whitespace-nowrap ${style.colour} text-white font-bold text-md rounded-lg border-2 border-black">
-                    ${style.text}
+                    ${style.shortText}
                 </div>
             `,
             className: "custom-marker",
