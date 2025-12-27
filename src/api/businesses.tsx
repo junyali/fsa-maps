@@ -42,3 +42,25 @@ export async function fetchBusinesses(
 
     return res.json();
 }
+
+export async function searchBusinesses(
+    name: string,
+    location: string,
+    ratings?: string[]
+): Promise<Business[]> {
+    const params = new URLSearchParams();
+
+    if (name) params.append('name', name);
+    if (location) params.append('location', location);
+    if (ratings && ratings.length > 0) {
+        params.append('ratings', ratings.join(","));
+    }
+
+    const res = await fetch(`/api/businesses/search?${params}`);
+
+    if (!res.ok) {
+        throw new Error("Failed to search businesses");
+    }
+
+    return res.json();
+}

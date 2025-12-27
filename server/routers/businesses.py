@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status
+from sqlalchemy import or_, func
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
@@ -31,6 +32,8 @@ class BusinessResponse(BaseModel):
     rating_key: Optional[str] = None
     rating_value: Optional[str] = None
 
+
+
 @router.get("", response_model=List[BusinessResponse])
 def get_businesses(
         min_lat: float = Query(...),
@@ -57,6 +60,39 @@ def get_businesses(
         Business.longitude >= min_lng,
         Business.longitude <= max_lng
     )
+
+    if ratings:
+        rating_list = ratings.split(",")
+        rating_list = [r.strip() for r in rating_list]
+        businesses = businesses.filter(Business.rating_value.in_(rating_list))
+    else:
+        return []
+
+    return businesses.all()
+
+@router.get("/search", response_model=List[BusinessResponse])
+def search_businesses(
+        name: str = Query(""),
+        location: str = Query(""),
+        ratings: str = Query(""),
+        db: Session = Depends(get_db)
+):
+    businesses = db.query(Business)
+
+    if name:
+        businesses = businesses.filter(func.lower(Business.name).contains(name.lower()))
+
+    if location:
+        location_lower = location.lower()
+        businesses = businesses.filter(
+            or_(
+                func.lower(Business.address_1).contains(location_lower),
+                func.lower(Business.address_2).contains(location_lower),
+                func.lower(Business.address_3).contains(location_lower),
+                func.lower(Business.address_4).contains(location_lower),
+                func.lower(Business.postcode).contains(location_lower)
+            )
+        )
 
     if ratings:
         rating_list = ratings.split(",")
