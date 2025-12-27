@@ -91,6 +91,12 @@ export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: 
                             )}
                         </h2>
                     </div>
+                    <div className="text-lg whitespace-normal">
+                        <p>
+                            This unofficial map is for informational purposes only, and is not affiliated with or endorsed by the Food Standards Agency or Food Standards Scotland. Data may be inaccurate and/or incomplete.
+                        </p>
+                    </div>
+                    <div className="w-full h-0.5 bg-gray-100" />
                 </div>
             </div>
         </div>
