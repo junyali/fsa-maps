@@ -32,7 +32,7 @@ function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBound
     return null;
 }
 
-export function Map() {
+export function Map({ onCountChange }: { onCountChange: (count: number) => void }) {
     /* DD coordinates according to the first google result */
     const ukCentre: [number, number] = [54.0021959912, -2.54204416515];
     const [businesses, setBusinesses] = useState<Business[]>([]);
@@ -120,6 +120,7 @@ export function Map() {
     const handleBoundsChange = async (bounds: L.LatLngBounds, zoom: number) => {
         if (zoom < 16) {
             setBusinesses([])
+            onCountChange(0);
             return;
         }
         try {
@@ -129,10 +130,11 @@ export function Map() {
             const east = bounds.getEast();
 
             const data = await fetchBusinesses(south, north, west, east);
-            console.log(data.length);
             setBusinesses(data);
+            onCountChange(data.length);
         } catch (error) {
             console.error("Failed to fetch businesses", error);
+            onCountChange(0);
         } finally {
         }
     };

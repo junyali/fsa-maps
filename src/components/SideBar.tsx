@@ -1,4 +1,28 @@
-export function SideBar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void; }) {
+import { useEffect, useState } from 'react';
+import { fetchMetadata, type Metadata } from '../api/metadata';
+
+export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: () => void; count: number; }) {
+    const [metadata, setMetadata] = useState<Metadata | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        fetchMetadata()
+            .then(data => setMetadata(data))
+            .catch((err: Error) => setError(err.message));
+    }, []);
+
+    const formatDate = (isoString: string) => {
+        const date = new Date(isoString);
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+        const year = date.getUTCFullYear();
+        const hours = date.getUTCHours().toString().padStart(2, '0');
+        const minutes = date.getUTCMinutes().toString().padStart(2, '0');
+        const seconds = date.getUTCSeconds().toString().padStart(2, '0');
+
+        return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} UTC`
+    }
+
     return (
         <div className="text-black">
             <button
@@ -17,7 +41,38 @@ export function SideBar({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 }}
             >
                 <div className="p-4">
-
+                    <div className="bg-gray-100 border-2 border-gray-200 p-2 text-xl whitespace-nowrap">
+                        <h2>
+                            Last Updated:{' '}
+                            {error ? (
+                                <span className="text-red-500 text-sm">Error loading</span>
+                            ) : metadata ? (
+                                <>
+                                    <span className="font-bold">
+                                        {formatDate(metadata.download_date)}
+                                    </span>
+                                    {metadata.data_age > 30 && (
+                                        <span className="text-red-400 text-sm ml-2">
+                                            ({metadata.data_age} days old)
+                                        </span>
+                                    )}
+                                </>
+                            ) : (
+                                <span className="text-sm">Loading...</span>
+                            )}
+                        </h2>
+                        <h2>
+                            Displaying:{' '}
+                            <span className="font-bold">
+                                {count.toLocaleString()}
+                            </span>
+                            {' '}{count === 1 ? 'business' : 'businesses'}{' '}{metadata && (
+                                <span className="text-gray-500 text-base">
+                                    out of {metadata.imported_records.toLocaleString()} records
+                                </span>
+                            )}
+                        </h2>
+                    </div>
                 </div>
             </div>
         </div>
