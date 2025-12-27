@@ -107,7 +107,7 @@ def update_database():
         metadata = Metadata(
             download_date=start_time.isoformat(),
             source=source,
-            csv_path=csv_path,
+            csv_path=csv_path if source == "local" else ONLINE_CSV,
             total_records=total_records,
             imported_records=imported,
             skipped_records=skipped,
