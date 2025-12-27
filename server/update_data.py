@@ -36,6 +36,11 @@ def get_csv_last_modified(csv_path):
     except Exception:
         return None
 
+def normalise_rating(rating_value):
+    if not rating_value or pd.isna(rating_value):
+        return None
+    return str(rating_value).lower().replace(" ", "").replace("_", "")
+
 def safe_get(row, key, default=None):
     value = row.get(key, default)
     if pd.isna(value):
@@ -84,7 +89,7 @@ def update_database():
                     date=safe_get(row, "RatingDate"),
                     scheme=safe_get(row, "SchemeType"),
                     rating_key=safe_get(row, "RatingKey"),
-                    rating_value=safe_get(row, "RatingValue")
+                    rating_value=normalise_rating(safe_get(row, "RatingValue"))
                 )
                 batch.append(business)
                 imported += 1
@@ -103,7 +108,7 @@ def update_database():
             db.bulk_save_objects(batch)
             db.commit()
 
-        elapsed = datetime.now() - start_time
+        elapsed = datetime.now(timezone.utc) - start_time
         metadata = Metadata(
             download_date=start_time.isoformat(),
             source=source,
