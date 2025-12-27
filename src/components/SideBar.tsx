@@ -1,7 +1,25 @@
 import { useEffect, useState } from 'react';
 import { fetchMetadata, type Metadata } from '../api/metadata';
+import {getRatingStyle} from "../utils/ratings.tsx";
 
-export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: () => void; count: number; }) {
+const allRatings = ["5", "4", "3", "2", "1", "0", "passandeatsafe", "pass", "improvementrequired", "exempt", "awaitingpublication", "awaitinginspection"];
+const fhrsRatings = ["5", "4", "3", "2", "1", "0"];
+const fhisRatings = ["passandeatsafe", "pass", "improvementrequired"];
+const otherRatings = ["exempt", "awaitingpublication", "awaitinginspection"];
+
+export function SideBar({
+    isOpen,
+    onClose,
+    count,
+    selectedRatings,
+    onRatingsChange
+}: {
+    isOpen: boolean;
+    onClose: () => void;
+    count: number;
+    selectedRatings: string[];
+    onRatingsChange: (ratings: string[]) => void;
+}) {
     const [metadata, setMetadata] = useState<Metadata | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -23,6 +41,22 @@ export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: 
         return `${day}/${month}/${year} ${hours}:${minutes}:${seconds} UTC`
     }
 
+    const toggleRating = (rating: string) => {
+        if (selectedRatings.includes(rating)) {
+            onRatingsChange(selectedRatings.filter(r => r !== rating));
+        } else {
+            onRatingsChange([...selectedRatings, rating]);
+        }
+    }
+
+    const selectAll = () => {
+        onRatingsChange(allRatings);
+    }
+
+    const deselectAll = () => {
+        onRatingsChange([]);
+    }
+
     return (
         <div className="text-black">
             <button
@@ -35,7 +69,7 @@ export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: 
                 {isOpen ? ">" : "<"}
             </button>
             <div
-                className={`absolute w-full lg:w-2/5 top-0 right-0 h-full bg-white transition-transform duration-100 ${isOpen ? 'translate-y-0 lg:translate-x-0' : 'translate-y-full lg:translate-x-full'}`}
+                className={`absolute w-full lg:w-2/5 top-0 right-0 h-full bg-white overflow-y-auto transition-transform duration-100 ${isOpen ? 'translate-y-0 lg:translate-x-0' : 'translate-y-full lg:translate-x-full'}`}
                 style={{
                     zIndex: 1000
                 }}
@@ -97,6 +131,93 @@ export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: 
                         </p>
                     </div>
                     <div className="w-full h-0.5 bg-gray-100" />
+                    <div className="bg-gray-100 border-2 border-gray-200 p-2 space-y-3">
+                        <div className="flex justify-between items-center">
+                            <h3 className="font-bold text-lg">Filters</h3>
+                            <div className="space-x-2">
+                                <button
+                                    onClick={selectAll}
+                                    className="text-sm text-blue-600 hover:underline cursor-pointer"
+                                >
+                                    Select All
+                                </button>
+                                <button
+                                    onClick={deselectAll}
+                                    className="text-sm text-blue-600 hover:underline cursor-pointer"
+                                >
+                                    Deselect All
+                                </button>
+                            </div>
+                        </div>
+                        <div className="flex flex-col lg:flex-row gap-4">
+                            <div>
+                            <h4 className="font-semibold text-sm text-gray-600 mb-1">FHRS (England, Wales, NI)</h4>
+                            <div className="space-y-1">
+                                {fhrsRatings.map(rating => {
+                                    const style = getRatingStyle(rating);
+                                    return (
+                                        <label key={rating} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRatings.includes(rating)}
+                                                onChange={() => toggleRating(rating)}
+                                                className="cursor-pointer"
+                                            />
+                                            <div className={`w-8 h-8 rounded-lg ${style.colour} text-white border-2 border-black text-sm font-bold flex items-center justify-center text-center`}>
+                                                {style.shortText}
+                                            </div>
+                                            <span className="font-semibold text-md">{style.longText}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-sm text-gray-600 mb-1">FHIS (Scotland)</h4>
+                            <div className="space-y-1">
+                                {fhisRatings.map(rating => {
+                                    const style = getRatingStyle(rating);
+                                    return (
+                                        <label key={rating} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRatings.includes(rating)}
+                                                onChange={() => toggleRating(rating)}
+                                                className="cursor-pointer"
+                                            />
+                                            <div className={`w-8 h-8 rounded-lg ${style.colour} text-white border-2 border-black text-sm font-bold flex items-center justify-center text-center`}>
+                                                {style.shortText}
+                                            </div>
+                                            <span className="font-semibold text-md">{style.longText}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        <div>
+                            <h4 className="font-semibold text-sm text-gray-600 mb-1">Other</h4>
+                            <div className="space-y-1">
+                                {otherRatings.map(rating => {
+                                    const style = getRatingStyle(rating);
+                                    return (
+                                        <label key={rating} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedRatings.includes(rating)}
+                                                onChange={() => toggleRating(rating)}
+                                                className="cursor-pointer"
+                                            />
+                                            <div className={`w-8 h-8 rounded-lg ${style.colour} text-white border-2 border-black text-sm font-bold flex items-center justify-center text-center`}>
+                                                {style.shortText}
+                                            </div>
+                                            <span className="font-semibold text-md">{style.longText}</span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
