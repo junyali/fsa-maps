@@ -4,7 +4,9 @@ import { Map } from '../components/Map';
 import { SideBar } from "../components/SideBar";
 
 export function HomePage() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+        return window.innerWidth >= 1024;
+    });
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
