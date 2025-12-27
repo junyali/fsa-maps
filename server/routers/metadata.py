@@ -24,7 +24,7 @@ def get_data_metadata(db: Session = Depends(get_db)):
             detail="No metadata available."
         )
 
-    download_date = datetime.fromisoformat(metadata.download_date)
+    download_date = datetime.fromisoformat(metadata.download_date).replace(tzinfo=timezone.utc)
 
     return {
         "download_date": metadata.download_date,
