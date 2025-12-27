@@ -127,7 +127,7 @@ export function SideBar({
                     </div>
                     <div className="text-lg whitespace-normal">
                         <p>
-                            This unofficial map is for informational purposes only, and is not affiliated with or endorsed by the Food Standards Agency or Food Standards Scotland. Data may be inaccurate and/or incomplete.
+                            This unofficial map is for informational purposes only, and is not affiliated with or endorsed by the Food Standards Agency or Food Standards Scotland. Data may be inaccurate and/or incomplete. Due to missing or incorrect location data, some businesses may not appear on the map or may be displayed in the wrong location.
                         </p>
                     </div>
                     <div className="w-full h-0.5 bg-gray-100" />
