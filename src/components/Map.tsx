@@ -34,7 +34,10 @@ function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBound
 
 export function Map({ onCountChange }: { onCountChange: (count: number) => void }) {
     /* DD coordinates according to the first google result */
-    const ukCentre: [number, number] = [54.0021959912, -2.54204416515];
+    /* const ukCentre: [number, number] = [54.0021959912, -2.54204416515]; */
+
+    /* central london */
+    const ukCentre: [number, number] = [51.509865, -0.118092];
     const [businesses, setBusinesses] = useState<Business[]>([]);
 
     const getRatingImage = (ratingKey: string | null): string | null => {
@@ -134,6 +137,7 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
             onCountChange(data.length);
         } catch (error) {
             console.error("Failed to fetch businesses", error);
+            setBusinesses([]);
             onCountChange(0);
         } finally {
         }
@@ -143,7 +147,7 @@ export function Map({ onCountChange }: { onCountChange: (count: number) => void 
         <div className="w-full h-full">
             <MapContainer
                 center={ukCentre}
-                zoom={6}
+                zoom={16}
                 className="w-full h-full"
             >
             <TileLayer
