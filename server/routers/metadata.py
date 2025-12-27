@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from server.database import SessionLocal, Metadata
-from datetime import datetime
+from datetime import datetime, timezone
 
 router = APIRouter(prefix="/metadata")
 
@@ -34,7 +34,7 @@ def get_data_metadata(db: Session = Depends(get_db)):
         "imported_records": metadata.imported_records,
         "skipped_records": metadata.skipped_records,
         "import_duration": metadata.import_duration,
-        "data_age": (datetime.now() - download_date).days
+        "data_age": (datetime.now(timezone.utc) - download_date).days
     }
 
 @router.get("/history")

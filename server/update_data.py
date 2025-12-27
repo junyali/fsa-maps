@@ -3,7 +3,7 @@ import pandas as pd
 import os
 from database import SessionLocal, Business, Metadata, Base, engine
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 ONLINE_CSV = "https://safhrsprodstorage.blob.core.windows.net/opendatafileblobstorage/FHRS_All_en-GB.csv"
 LOCAL_CSV = "../FHRS_All_en-GB.csv"
@@ -32,7 +32,7 @@ def download_csv():
 def get_csv_last_modified(csv_path):
     try:
         timestamp = os.path.getmtime(csv_path)
-        return datetime.fromtimestamp(timestamp).isoformat()
+        return datetime.fromtimestamp(timestamp, tz=timezone.utc).isoformat()
     except Exception:
         return None
 
@@ -44,7 +44,7 @@ def safe_get(row, key, default=None):
         return value if value != "" else default
 
 def update_database():
-    start_time = datetime.now()
+    start_time = datetime.now(timezone.utc)
     csv_path, source = download_csv()
 
     Base.metadata.create_all(bind=engine)
