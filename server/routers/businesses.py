@@ -62,5 +62,7 @@ def get_businesses(
         rating_list = ratings.split(",")
         rating_list = [r.strip() for r in rating_list]
         businesses = businesses.filter(Business.rating_value.in_(rating_list))
+    else:
+        return []
 
     return businesses.all()
