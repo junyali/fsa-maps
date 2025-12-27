@@ -40,7 +40,25 @@ export function SideBar({ isOpen, onClose, count }: { isOpen: boolean; onClose: 
                     zIndex: 1000
                 }}
             >
-                <div className="p-4">
+                <div className="px-4 space-y-1">
+                    <div className="mx-1 space-x-2">
+                        <a
+                            href="https://github.com/junyali/fsa-maps"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="decoration underline text-gray-500 text-xs"
+                        >
+                            View source code (GitHub)
+                        </a>
+                        <a
+                            href="https://ratings.food.gov.uk/open-data"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="decoration underline text-gray-500 text-xs"
+                        >
+                            View source data (Food Standards Agency UK)
+                        </a>
+                    </div>
                     <div className="bg-gray-100 border-2 border-gray-200 p-2 text-xl whitespace-nowrap">
                         <h2>
                             Last Updated:{' '}
