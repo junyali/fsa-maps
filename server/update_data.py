@@ -6,7 +6,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 ONLINE_CSV = "https://safhrsprodstorage.blob.core.windows.net/opendatafileblobstorage/FHRS_All_en-GB.csv"
-LOCAL_CSV = "../FHRS_All_en-GB.csv"
+LOCAL_CSV = "./FHRS_All_en-GB.csv"
 
 def download_csv():
     source = "local"
