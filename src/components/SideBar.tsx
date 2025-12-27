@@ -1,23 +1,24 @@
-import { useState } from 'react';
-
-export function SideBar() {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
+export function SideBar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void; }) {
     return (
-        <div
-            className={`absolute w-2/5 top-0 right-0 h-full bg-white transition-transform duration-100 text-black ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}`}
-            style={{
-                zIndex: 1000
-            }}
-        >
+        <div className="text-black">
             <button
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="absolute left-0 top-1/2 -translate-x-full -translate-y-1/2 bg-white rounded-l-md hover:bg-gray-100 p-3 text-xl font-bold"
+                onClick={onClose}
+                className={`hidden lg:block absolute top-1/2 ${isOpen ? 'right-2/5' : 'right-0'} -translate-y-1/2 bg-white rounded-l-md hover:bg-gray-100 p-3 text-xl font-bold transition-all duration-100`}
+                style={{
+                    zIndex: 1001
+                }}
             >
-                {isSidebarOpen ? ">" : "<"}
+                {isOpen ? ">" : "<"}
             </button>
-            <div className="p-4">
-                <h1 className="text-xl font-bold mb-4">FSA Maps</h1>
+            <div
+                className={`absolute w-full lg:w-2/5 top-0 right-0 h-full bg-white transition-transform duration-100 ${isOpen ? 'translate-y-0 lg:translate-x-0' : 'translate-y-full lg:translate-x-full'}`}
+                style={{
+                    zIndex: 1000
+                }}
+            >
+                <div className="p-4">
+
+                </div>
             </div>
         </div>
     )
