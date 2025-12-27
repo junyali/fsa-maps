@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
-from database import SessionLocal, Business, Base, engine
+import os
+from database import SessionLocal, Business, Metadata, Base, engine
 from pathlib import Path
 from datetime import datetime
 
@@ -8,6 +9,7 @@ ONLINE_CSV = "https://safhrsprodstorage.blob.core.windows.net/opendatafileblobst
 LOCAL_CSV = "../FHRS_All_en-GB.csv"
 
 def download_csv():
+    source = "local"
     try:
         response = requests.get(ONLINE_CSV, timeout=60)
         response.raise_for_status()
@@ -16,7 +18,8 @@ def download_csv():
             f.write(response.content)
 
         print("Download success!")
-        return LOCAL_CSV
+        source = "online"
+        return LOCAL_CSV, source
     except Exception as e:
         print(f"Download failed! {e}")
 
@@ -24,7 +27,14 @@ def download_csv():
             raise FileNotFoundError(f"No local copy found at {LOCAL_CSV}")
 
         print("Using local copy")
-        return LOCAL_CSV
+        return LOCAL_CSV, source
+
+def get_csv_last_modified(csv_path):
+    try:
+        timestamp = os.path.getmtime(csv_path)
+        return datetime.fromtimestamp(timestamp).isoformat()
+    except Exception:
+        return None
 
 def safe_get(row, key, default=None):
     value = row.get(key, default)
@@ -35,15 +45,17 @@ def safe_get(row, key, default=None):
 
 def update_database():
     start_time = datetime.now()
-    csv_path = download_csv()
+    csv_path, source = download_csv()
 
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
     try:
         df = pd.read_csv(csv_path, encoding='utf-8', low_memory=False)
+        total_records = len(df)
         print(f"Loading {len(df)} records from CSV")
 
+        db.query(Metadata).update({"is_current": False})
         db.query(Business).delete()
         db.commit()
 
@@ -92,6 +104,19 @@ def update_database():
             db.commit()
 
         elapsed = datetime.now() - start_time
+        metadata = Metadata(
+            download_date=start_time.isoformat(),
+            source=source,
+            csv_path=csv_path,
+            total_records=total_records,
+            imported_records=imported,
+            skipped_records=skipped,
+            import_duration=elapsed.total_seconds(),
+            csv_last_modified=get_csv_last_modified(csv_path),
+            is_current=True
+        )
+        db.add(metadata)
+        db.commit()
         print(f"Database update complete! Imported {imported}, skipped {skipped}, time taken: {elapsed}")
     finally:
         db.close()

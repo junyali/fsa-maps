@@ -33,4 +33,18 @@ class Business(Base):
     rating_key = Column(String)
     rating_value = Column(String)
 
+class Metadata(Base):
+    __tablename__ = "metadata"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    download_date = Column(String, nullable=False)
+    source = Column(String, nullable=False)
+    csv_path = Column(String, nullable=False)
+    total_records = Column(Integer, nullable=False)
+    imported_records = Column(Integer, nullable=False)
+    skipped_records = Column(Integer, nullable=False)
+    import_duration = Column(Float, nullable=True)
+    csv_last_modified = Column(String, nullable=True)
+    is_current = Column(Boolean, default=True)
+
 Base.metadata.create_all(bind=engine)
