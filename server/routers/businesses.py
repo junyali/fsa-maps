@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict
@@ -39,6 +39,17 @@ def get_businesses(
         max_lng: float = Query(...),
         db: Session = Depends(get_db)
 ):
+    if min_lat >= max_lat:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="min_lat must be less than max_lat"
+        )
+    if min_lng >= max_lng:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="min_lng must be less than max_lng"
+        )
+
     businesses = db.query(Business).filter(
         Business.latitude >= min_lat,
         Business.latitude <= max_lat,
