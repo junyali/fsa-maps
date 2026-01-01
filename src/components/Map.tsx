@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import icon from 'leaflet/dist/images/marker-icon.png';
 import iconShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -33,7 +33,41 @@ function MapUpdater({ onBoundsChange }: { onBoundsChange: (bounds: L.LatLngBound
     return null;
 }
 
-export function Map({ onCountChange, selectedRatings }: { onCountChange: (count: number) => void; selectedRatings: string[] }) {
+function FlyTo({ coordinates, businessId }: { coordinates: { lat: number; lng: number } | null | undefined; businessId?: number | null }) {
+    const map = useMap();
+
+    useEffect(() => {
+        if (coordinates) {
+            map.flyTo(
+                [coordinates.lat, coordinates.lng],
+                19,
+                {
+                    duration: 1.5,
+                    easeLinearity: 0.25,
+                }
+            );
+
+            if (businessId) {
+                setTimeout(() => {
+                    map.eachLayer((layer) => {
+                        if (layer instanceof L.Marker) {
+                            const marker = layer as L.Marker;
+                            // @ts-ignore
+                            // TODO: fix race condition here
+                            if (marker.options.businessId === businessId) {
+                                marker.openPopup();
+                            }
+                        }
+                    });
+                }, 2000)
+            }
+        }
+    }, [coordinates, businessId, map]);
+
+    return null;
+}
+
+export function Map({ onCountChange, selectedRatings, flyTo, flyToBusinessId }: { onCountChange: (count: number) => void; selectedRatings: string[], flyTo?: { lat: number; lng: number } | null; flyToBusinessId?: number | null; }) {
     /* DD coordinates according to the first google result */
     /* const ukCentre: [number, number] = [54.0021959912, -2.54204416515]; */
 
@@ -102,11 +136,14 @@ export function Map({ onCountChange, selectedRatings }: { onCountChange: (count:
                 maxZoom={24}
             />
             <MapUpdater onBoundsChange={handleBoundsChange} />
+            <FlyTo coordinates={flyTo} businessId={flyToBusinessId} />
             {businesses.map(business => (
                 <Marker
                     key={business.id}
                     position={[business.latitude, business.longitude]}
                     icon={createIcon(business.rating_value)}
+                    // @ts-ignore
+                    businessId={business.id}
                 >
                     <Popup>
                         <div>

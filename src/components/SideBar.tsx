@@ -13,13 +13,15 @@ export function SideBar({
                             onClose,
                             count,
                             selectedRatings,
-                            onRatingsChange
+                            onRatingsChange,
+                            onFlyTo
                         }: {
     isOpen: boolean;
     onClose: () => void;
     count: number;
     selectedRatings: string[];
     onRatingsChange: (ratings: string[]) => void;
+    onFlyTo: (lat: number, lng: number, businessId?: number | null) => void;
 }) {
     const [metadata, setMetadata] = useState<Metadata | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -303,7 +305,9 @@ export function SideBar({
                                 <div
                                     key={business.id}
                                     onClick={() => {
-
+                                        if (business.latitude && business.longitude) {
+                                            onFlyTo(business.latitude, business.longitude, business.id);
+                                        }
                                     }}
                                     className="bg-white border-2 border-gray-200 p-3 cursor-pointer hover:bg-gray-50 hover:border-blue-500 transition-colors flex gap-3"
                                 >

@@ -15,6 +15,17 @@ export function HomePage() {
     const [selectedRatings, setSelectedRatings] = useState<string[]>([
         "2", "1", "0", "improvementrequired", "exempt", "awaitingpublication", "awaitinginspection"
     ])
+    const [flyTo, setFlyTo] = useState<{ lat: number; lng: number } | null>(null);
+    const [flyToBusinessId, setFlyToBusinessId] = useState<number | null>(null);
+
+    const handleFlyToLocation = (lat: number, lng: number, businessId?: number) => {
+        setFlyTo({ lat, lng });
+        setFlyToBusinessId(businessId ?? null);
+        setTimeout(() => {
+            setFlyTo(null);
+            setFlyToBusinessId(null);
+        }, 100);
+    }
 
     return (
         <div className="flex flex-col min-h-screen h-screen w-full">
@@ -23,6 +34,8 @@ export function HomePage() {
                 <Map
                     onCountChange={setCount}
                     selectedRatings={selectedRatings}
+                    flyTo={flyTo}
+                    flyToBusinessId={flyToBusinessId}
                 />
                 <SideBar
                     isOpen={isSidebarOpen}
@@ -30,6 +43,7 @@ export function HomePage() {
                     count={count}
                     selectedRatings={selectedRatings}
                     onRatingsChange={setSelectedRatings}
+                    onFlyTo={handleFlyToLocation}
                 />
             </div>
         </div>
