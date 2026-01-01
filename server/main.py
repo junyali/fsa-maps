@@ -9,6 +9,9 @@ from slowapi.util import get_remote_address
 from server.routers.health import router as health_router
 from server.routers.businesses import router as businesses_router
 from server.routers.metadata import router as metadata_router
+
+from server.update_data import update_database
+
 import logging
 
 logging.getLogger("uvicorn.access").setLevel(logging.WARNING)
@@ -51,3 +54,6 @@ def rate_limit_handler(request: Request, exc: RateLimitExceeded):
 async def main():
     return {"status": "ok"}
 
+@app.on_event("startup")
+def startup_event():
+    update_database()

@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 import os
-from database import SessionLocal, Business, Metadata, Base, engine
+from .database import SessionLocal, Business, Metadata, Base, engine
 from pathlib import Path
 from datetime import datetime, timezone
 
