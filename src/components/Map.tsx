@@ -67,29 +67,6 @@ function FlyTo({ coordinates, businessId }: { coordinates: { lat: number; lng: n
     return null;
 }
 
-function MapResizeHandler() {
-    const map = useMap();
-
-    useEffect(() => {
-        const handleResize = () => {
-            map.invalidateSize();
-        };
-
-        const resizeObserver = new ResizeObserver(handleResize);
-        const container = map.getContainer().parentElement;
-
-        if (container) {
-            resizeObserver.observe(container);
-        }
-
-        return () => {
-            resizeObserver.disconnect();
-        };
-    }, [map]);
-
-    return null;
-}
-
 export function Map({ onCountChange, selectedRatings, flyTo, flyToBusinessId }: { onCountChange: (count: number) => void; selectedRatings: string[], flyTo?: { lat: number; lng: number } | null; flyToBusinessId?: number | null; }) {
     /* DD coordinates according to the first google result */
     /* const ukCentre: [number, number] = [54.0021959912, -2.54204416515]; */
@@ -160,7 +137,6 @@ export function Map({ onCountChange, selectedRatings, flyTo, flyToBusinessId }: 
             />
             <MapUpdater onBoundsChange={handleBoundsChange} />
             <FlyTo coordinates={flyTo} businessId={flyToBusinessId} />
-            <MapResizeHandler />
             {businesses.map(business => (
                 <Marker
                     key={business.id}
