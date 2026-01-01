@@ -258,7 +258,7 @@ export function SideBar({
                                     type="text"
                                     value={searchName}
                                     onChange={(e) => setSearchName(e.target.value)}
-                                    placeholder=""
+                                    placeholder="Business Ltd"
                                     className="w-full px-3 py-2 border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
@@ -268,7 +268,7 @@ export function SideBar({
                                     type="text"
                                     value={searchLocation}
                                     onChange={(e) => setSearchLocation(e.target.value)}
-                                    placeholder=""
+                                    placeholder="Flat 2, 12 Arbour Road, London"
                                     className="w-full px-3 py-2 border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 />
                             </div>
