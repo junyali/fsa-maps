@@ -10,14 +10,12 @@ const otherRatings = ["exempt", "awaitingpublication", "awaitinginspection"];
 
 export function SideBar({
                             isOpen,
-                            onClose,
                             count,
                             selectedRatings,
                             onRatingsChange,
                             onFlyTo
                         }: {
     isOpen: boolean;
-    onClose: () => void;
     count: number;
     selectedRatings: string[];
     onRatingsChange: (ratings: string[]) => void;
@@ -85,19 +83,10 @@ export function SideBar({
 
     return (
         <div className="text-black">
-            <button
-                onClick={onClose}
-                className={`hidden lg:block absolute top-1/2 ${isOpen ? 'right-2/5' : 'right-0'} -translate-y-1/2 bg-white rounded-l-md hover:bg-gray-100 p-3 text-xl font-bold transition-all duration-100`}
-                style={{
-                    zIndex: 1001
-                }}
-            >
-                {isOpen ? ">" : "<"}
-            </button>
             <div
-                className={`absolute w-full lg:w-2/5 top-0 right-0 h-full bg-white overflow-y-auto transition-transform duration-100 ${isOpen ? 'translate-y-0 lg:translate-x-0' : 'translate-y-full lg:translate-x-full'}`}
+                className={`lg:relative lg:w-full lg:h-full absolute w-full top-0 right-0 h-full bg-white overflow-y-auto transition-transform duration-100 ${isOpen ? 'translate-y-0' : 'translate-y-full lg:translate-y-0'}`}
                 style={{
-                    zIndex: 1000
+                    zIndex: isOpen ? 1000 : 0
                 }}
             >
                 <div className="px-4 space-y-1">
